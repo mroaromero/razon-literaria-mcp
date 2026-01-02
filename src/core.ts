@@ -1,4 +1,5 @@
 import { Tool } from "@modelcontextprotocol/sdk/types.js";
+import { logger } from './logger.js';
 
 // ============================================================================
 // GNOSIS MCP - Servidor de Construcción Gnoseológica
@@ -303,10 +304,8 @@ export class RazonLiterariaServer {
       const domainInfo = this.getDomainInfo(data.tag);
       this.journey.push(data);
 
-      // Log para debugging
-      console.error(`\n${domainInfo.icon} [${domainInfo.domain.toUpperCase()}:${data.tag}] Paso ${data.stepNumber}`);
-      console.error(`${'─'.repeat(60)}`);
-      console.error(data.content);
+      // Log estructurado
+      logger.operation(domainInfo.domain, data.tag, data.stepNumber, data.content);
 
       // --- RESPUESTAS ESPECIALES POR TAG ---
 
@@ -452,7 +451,13 @@ export class RazonLiterariaServer {
   }
 
   // Método para obtener resumen del journey
-  public getSummary(): object {
+  public getSummary(): {
+    pasos: number;
+    trayectoria: string[];
+    terminos: string[];
+    relaciones: string[];
+    falacias: string[];
+  } {
     return {
       pasos: this.journey.length,
       trayectoria: this.journey.map(j => j.tag),

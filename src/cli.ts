@@ -3,6 +3,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { RazonLiterariaServer, GNOSIS_TOOL } from './core.js';
+import { logger } from './logger.js';
 
 // ============================================================================
 // GNOSIS MCP - CLI (Stdio Transport)
@@ -44,16 +45,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 const transport = new StdioServerTransport();
 
 server.connect(transport).catch((error) => {
-  console.error("Error fatal en GNOSIS MCP:", error);
+  logger.error("Error fatal en GNOSIS MCP", { data: { error: String(error) } });
   process.exit(1);
 });
 
-console.error(`
-╔══════════════════════════════════════════════════════════════╗
-║  GNOSIS MCP v2.0.0 - Construcción Gnoseológica               ║
-║  Materialismo Filosófico de Gustavo Bueno                    ║
-╠══════════════════════════════════════════════════════════════╣
-║  24 tags operatorios | 8 dominios | 3 falacias               ║
-║  Inicia con 'comenzar', termina con 'transducir'             ║
-╚══════════════════════════════════════════════════════════════╝
-`);
+logger.banner('GNOSIS MCP', '2.0.0', 'cli');
