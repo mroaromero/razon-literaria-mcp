@@ -1,7 +1,34 @@
+# ============================================================================
+# GNOSIS MCP - Smithery Configuration
+# Servidor de Construcción Gnoseológica - Materialismo Filosófico
+# ============================================================================
+
+name: gnosis-mcp
+version: 2.0.0
+description: Servidor MCP de Construcción Gnoseológica basado en el Materialismo Filosófico
+
 runtime: container
+
 startCommand:
   type: http
   url: http://localhost:3000/mcp
+
 build:
   dockerfile: Dockerfile
   context: .
+
+# Metadata
+metadata:
+  author: Materialismo Filosófico
+  license: MIT
+  tags:
+    - philosophy
+    - gnoseology
+    - materialism
+    - critical-thinking
+    - llm
+  
+  capabilities:
+    tools:
+      - name: gnosis
+        description: Herramienta de construcción gnoseológica con 24 tags operatorios

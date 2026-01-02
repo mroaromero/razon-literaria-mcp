@@ -1,17 +1,37 @@
 {
-  "name": "razon-literaria-mcp",
-  "version": "1.0.0",
-  "description": "Servidor MCP de Razonamiento Crítico basado en el Materialismo Filosófico",
+  "name": "gnosis-mcp",
+  "version": "2.0.0",
+  "description": "Servidor MCP de Construcción Gnoseológica basado en el Materialismo Filosófico de Gustavo Bueno",
   "type": "module",
   "main": "dist/cli.js",
   "bin": {
+    "gnosis-mcp": "dist/cli.js",
     "razon-literaria": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
     "start": "node dist/cli.js",
     "start:http": "node dist/server.js",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "rebuild": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "materialismo-filosofico",
+    "gustavo-bueno",
+    "gnoseologia",
+    "filosofia",
+    "critica-literaria",
+    "llm",
+    "ai"
+  ],
+  "author": "Materialismo Filosófico",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/gnosis-mcp.git"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.1",

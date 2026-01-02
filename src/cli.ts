@@ -2,35 +2,58 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import { RazonLiterariaServer, RAZON_TOOL } from './core.js';
+import { RazonLiterariaServer, GNOSIS_TOOL } from './core.js';
 
-// Inicialización del servidor MCP
+// ============================================================================
+// GNOSIS MCP - CLI (Stdio Transport)
+// Servidor de Construcción Gnoseológica - Materialismo Filosófico
+// ============================================================================
+
 const server = new Server(
-  { name: "razon-literaria-cli", version: "1.0.0" },
-  { capabilities: { tools: {} } }
+  { 
+    name: "gnosis-mcp", 
+    version: "2.0.0" 
+  },
+  { 
+    capabilities: { 
+      tools: {} 
+    } 
+  }
 );
 
-// Instancia del cerebro
-const razonBackend = new RazonLiterariaServer();
+// Instancia del servidor gnoseológico
+const gnosisBackend = new RazonLiterariaServer();
 
-// Registro de herramientas
+// Registro de herramientas disponibles
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [RAZON_TOOL]
+  tools: [GNOSIS_TOOL]
 }));
 
-// Manejo de llamadas
+// Manejo de llamadas a herramientas
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  if (request.params.name === "razon_literaria") {
-    return razonBackend.processThought(request.params.arguments);
+  const { name, arguments: args } = request.params;
+  
+  if (name === "gnosis" || name === "razon_literaria") {
+    return gnosisBackend.processThought(args);
   }
-  throw new Error(`Herramienta desconocida ${request.params.name}`);
+  
+  throw new Error(`Herramienta desconocida: ${name}. Usa 'gnosis'.`);
 });
 
 // Conexión vía Stdio
 const transport = new StdioServerTransport();
+
 server.connect(transport).catch((error) => {
-  console.error("Error fatal en el servidor CLI", error);
+  console.error("Error fatal en GNOSIS MCP:", error);
   process.exit(1);
 });
 
-console.error("Servidor Razón Literaria (CLI) iniciado. Esperando inputs...");
+console.error(`
+╔══════════════════════════════════════════════════════════════╗
+║  GNOSIS MCP v2.0.0 - Construcción Gnoseológica               ║
+║  Materialismo Filosófico de Gustavo Bueno                    ║
+╠══════════════════════════════════════════════════════════════╣
+║  24 tags operatorios | 8 dominios | 3 falacias               ║
+║  Inicia con 'comenzar', termina con 'transducir'             ║
+╚══════════════════════════════════════════════════════════════╝
+`);
