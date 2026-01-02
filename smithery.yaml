@@ -1,0 +1,7 @@
+runtime: container
+startCommand:
+  type: http
+  url: http://localhost:3000/mcp
+build:
+  dockerfile: Dockerfile
+  context: .
