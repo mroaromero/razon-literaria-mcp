@@ -46,7 +46,7 @@ export const GNOSEOLOGIA_DOMAINS: Record<string, { tags: string[], icon: string,
 
   // Fase 6: Impugnación Crítica y Análisis Dialéctico
   critico: {
-    tags: ['impugnar', 'symploke', 'conjugar', 'dialectizar'],
+    tags: ['impugnar', 'symploke', 'conjugar', 'dialectizar', 'criticar', 'ejemplificar'],
     icon: '⚔️',
     color: 'red'
   },
@@ -301,11 +301,17 @@ export class RazonLiterariaServer {
         this.falaciasDetectadas.push(data.falacia);
       }
 
+      // Validar flujo operatorio
+      const flowValidation = this.validateFlow(data.tag, data.stepNumber);
+
       const domainInfo = this.getDomainInfo(data.tag);
       this.journey.push(data);
 
       // Log estructurado
       logger.operation(domainInfo.domain, data.tag, data.stepNumber, data.content);
+      if (flowValidation.warning) {
+        logger.warn(flowValidation.warning, { domain: domainInfo.domain, tag: data.tag });
+      }
 
       // --- RESPUESTAS ESPECIALES POR TAG ---
 
@@ -465,6 +471,74 @@ export class RazonLiterariaServer {
       relaciones: this.relacionesEstablecidas,
       falacias: this.falaciasDetectadas
     };
+  }
+
+  // --- PERSISTENCIA DEL JOURNEY ---
+  
+  // Exporta el estado actual a JSON
+  public exportJourney(): string {
+    return JSON.stringify({
+      version: '2.0.0',
+      timestamp: new Date().toISOString(),
+      campoCategorial: this.campoCategorial,
+      journey: this.journey,
+      terminos: this.terminosIdentificados,
+      relaciones: this.relacionesEstablecidas,
+      falacias: this.falaciasDetectadas
+    }, null, 2);
+  }
+
+  // Importa estado desde JSON
+  public importJourney(json: string): { success: boolean; error?: string } {
+    try {
+      const data = JSON.parse(json);
+      if (!data.journey || !Array.isArray(data.journey)) {
+        return { success: false, error: 'Formato inválido: falta array "journey"' };
+      }
+      this.journey = data.journey;
+      this.campoCategorial = data.campoCategorial || '';
+      this.terminosIdentificados = data.terminos || [];
+      this.relacionesEstablecidas = data.relaciones || [];
+      this.falaciasDetectadas = data.falacias || [];
+      return { success: true };
+    } catch (e: any) {
+      return { success: false, error: `Error al parsear JSON: ${e.message}` };
+    }
+  }
+
+  // Limpia el estado explícitamente
+  public clearJourney(): void {
+    this.journey = [];
+    this.campoCategorial = '';
+    this.terminosIdentificados = [];
+    this.relacionesEstablecidas = [];
+    this.falaciasDetectadas = [];
+  }
+
+  // --- VALIDACIÓN DE FLUJO OPERATORIO ---
+
+  private validateFlow(tag: string, stepNumber: number): { valid: boolean; warning?: string } {
+    // Comenzar debe ser paso 1 o cercano
+    if (tag === 'comenzar' && stepNumber > 1) {
+      return { valid: true, warning: 'ADVERTENCIA: "comenzar" usualmente es el paso 1' };
+    }
+    
+    // Transducir requiere pasos previos
+    if (tag === 'transducir' && this.journey.length === 0) {
+      return { valid: true, warning: 'ADVERTENCIA: "transducir" requiere pasos previos de análisis' };
+    }
+    
+    // Impugnar es más efectivo con términos identificados
+    if (tag === 'impugnar' && this.terminosIdentificados.length === 0) {
+      return { valid: true, warning: 'SUGERENCIA: "impugnar" es más preciso después de identificar términos' };
+    }
+    
+    // Relacionar requiere términos
+    if (tag === 'relacionar' && this.terminosIdentificados.length < 2) {
+      return { valid: true, warning: 'SUGERENCIA: "relacionar" requiere al menos 2 términos identificados' };
+    }
+    
+    return { valid: true };
   }
 }
 

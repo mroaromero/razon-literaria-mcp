@@ -1,8 +1,15 @@
 #!/usr/bin/env node
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { 
+  CallToolRequestSchema, 
+  ListToolsRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema
+} from "@modelcontextprotocol/sdk/types.js";
 import { RazonLiterariaServer, GNOSIS_TOOL } from './core.js';
+import { GLOSARIO_TOOL, consultarGlosario, GLOSARIO } from './glossary.js';
+import { GNOSIS_RESOURCES, GNOSIS_PROMPT } from './prompts.js';
 import { logger } from './logger.js';
 
 // ============================================================================
@@ -17,7 +24,8 @@ const server = new Server(
   },
   { 
     capabilities: { 
-      tools: {} 
+      tools: {},
+      resources: {}
     } 
   }
 );
@@ -27,7 +35,7 @@ const gnosisBackend = new RazonLiterariaServer();
 
 // Registro de herramientas disponibles
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [GNOSIS_TOOL]
+  tools: [GNOSIS_TOOL, GLOSARIO_TOOL]
 }));
 
 // Manejo de llamadas a herramientas
@@ -38,7 +46,43 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return gnosisBackend.processThought(args);
   }
   
-  throw new Error(`Herramienta desconocida: ${name}. Usa 'gnosis'.`);
+  if (name === "gnosis_glosario") {
+    return consultarGlosario(args as any);
+  }
+  
+  throw new Error(`Herramienta desconocida: ${name}. Usa 'gnosis' o 'gnosis_glosario'.`);
+});
+
+// Registro de recursos MCP
+server.setRequestHandler(ListResourcesRequestSchema, async () => ({
+  resources: GNOSIS_RESOURCES
+}));
+
+// Lectura de recursos MCP
+server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  const { uri } = request.params;
+  
+  if (uri === 'gnosis://prompt/principal') {
+    return {
+      contents: [{
+        uri,
+        mimeType: 'text/plain',
+        text: GNOSIS_PROMPT
+      }]
+    };
+  }
+  
+  if (uri === 'gnosis://glosario/completo') {
+    return {
+      contents: [{
+        uri,
+        mimeType: 'application/json',
+        text: JSON.stringify(GLOSARIO, null, 2)
+      }]
+    };
+  }
+  
+  throw new Error(`Recurso no encontrado: ${uri}`);
 });
 
 // Conexión vía Stdio
@@ -50,3 +94,4 @@ server.connect(transport).catch((error) => {
 });
 
 logger.banner('GNOSIS MCP', '2.0.0', 'cli');
+

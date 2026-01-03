@@ -3,6 +3,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { RazonLiterariaServer, GNOSIS_TOOL } from './core.js';
+import { GLOSARIO_TOOL, consultarGlosario } from './glossary.js';
 import { logger } from './logger.js';
 
 // ============================================================================
@@ -13,13 +14,27 @@ import { logger } from './logger.js';
 const app = express();
 app.use(express.json());
 
+// --- Estadísticas del servidor ---
+const stats = {
+  startTime: new Date().toISOString(),
+  totalSessions: 0,
+  totalOperations: 0,
+  operationsByTag: {} as Record<string, number>,
+  falaciasImpugnadas: {
+    descriptivismo: 0,
+    teoreticismo: 0,
+    adecuacionismo: 0
+  }
+};
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     name: 'gnosis-mcp',
     version: '2.0.0',
-    framework: 'Materialismo Filosófico'
+    framework: 'Materialismo Filosófico',
+    uptime: Math.floor((Date.now() - new Date(stats.startTime).getTime()) / 1000) + 's'
   });
 });
 
@@ -31,16 +46,27 @@ app.get('/info', (req, res) => {
     description: 'Servidor de Construcción Gnoseológica basado en el Materialismo Filosófico',
     authors: ['Gustavo Bueno', 'Jesús G. Maestro'],
     domains: 8,
-    tags: 24,
+    tags: 26,  // Updated: 24 + 2 new (criticar, ejemplificar)
     falacias: ['descriptivismo', 'teoreticismo', 'adecuacionismo'],
     materialidad: ['M1 (físico)', 'M2 (psíquico)', 'M3 (lógico)'],
-    flujo: 'comenzar → terminar → relacionar → fenomenizar → referenciar → esenciar → definir/clasificar/demostrar/modelar → impugnar → conjugar → dialectizar → verificar → cerrar → transducir'
+    tools: ['gnosis', 'gnosis_glosario'],
+    flujo: 'comenzar → terminar → relacionar → fenomenizar → referenciar → esenciar → definir/clasificar/demostrar/modelar → impugnar → criticar → ejemplificar → conjugar → dialectizar → verificar → cerrar → transducir'
+  });
+});
+
+// Stats endpoint (new)
+app.get('/stats', (req, res) => {
+  res.json({
+    status: 'ok',
+    ...stats,
+    uptime: Math.floor((Date.now() - new Date(stats.startTime).getTime()) / 1000) + 's'
   });
 });
 
 // SSE endpoint para MCP
 app.get('/mcp', async (req, res) => {
   logger.info('Nueva conexión SSE establecida');
+  stats.totalSessions++;
   
   const transport = new SSEServerTransport('/mcp', res);
   
@@ -53,14 +79,30 @@ app.get('/mcp', async (req, res) => {
   const gnosisBackend = new RazonLiterariaServer();
 
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: [GNOSIS_TOOL]
+    tools: [GNOSIS_TOOL, GLOSARIO_TOOL]
   }));
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
     
     if (name === "gnosis" || name === "razon_literaria") {
+      stats.totalOperations++;
+      const tag = (args as any).tag;
+      stats.operationsByTag[tag] = (stats.operationsByTag[tag] || 0) + 1;
+      
+      // Track falacias
+      if (tag === 'impugnar' && (args as any).falacia) {
+        const falacia = (args as any).falacia as keyof typeof stats.falaciasImpugnadas;
+        if (stats.falaciasImpugnadas[falacia] !== undefined) {
+          stats.falaciasImpugnadas[falacia]++;
+        }
+      }
+      
       return gnosisBackend.processThought(args);
+    }
+    
+    if (name === "gnosis_glosario") {
+      return consultarGlosario(args as any);
     }
     
     throw new Error(`Herramienta desconocida: ${name}`);
@@ -84,8 +126,10 @@ app.listen(PORT, () => {
     data: {
       health: 'GET /health',
       info: 'GET /info',
+      stats: 'GET /stats',
       sse: 'GET /mcp',
       messages: 'POST /mcp'
     }
   });
 });
+

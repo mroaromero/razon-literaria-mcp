@@ -30,8 +30,8 @@ describe('GNOSIS MCP - Core', () => {
       expect(dominios).toContain('cierre');
     });
 
-    it('debe tener 24 tags operatorios', () => {
-      expect(CORE_TAGS).toHaveLength(24);
+    it('debe tener 26 tags operatorios', () => {
+      expect(CORE_TAGS).toHaveLength(26);
     });
 
     it('debe incluir los tags esenciales', () => {
@@ -40,6 +40,9 @@ describe('GNOSIS MCP - Core', () => {
       expect(CORE_TAGS).toContain('relacionar');
       expect(CORE_TAGS).toContain('impugnar');
       expect(CORE_TAGS).toContain('transducir');
+      // Nuevos tags v2.0.0
+      expect(CORE_TAGS).toContain('criticar');
+      expect(CORE_TAGS).toContain('ejemplificar');
     });
 
     it('debe tener 3 falacias definidas', () => {
@@ -327,4 +330,107 @@ describe('GNOSIS MCP - Core', () => {
       expect(summary.pasos).toBe(3);
     });
   });
+
+  describe('Persistencia del Journey', () => {
+    it('exportJourney() debe serializar estado a JSON', () => {
+      server.processThought({
+        tag: 'comenzar',
+        content: 'Campo de prueba',
+        stepNumber: 1,
+        nextStepNeeded: true
+      });
+
+      server.processThought({
+        tag: 'terminar',
+        content: 'Identificando términos',
+        stepNumber: 2,
+        nextStepNeeded: true,
+        terminos: ['A', 'B']
+      });
+
+      const json = server.exportJourney();
+      const data = JSON.parse(json);
+
+      expect(data.version).toBe('2.0.0');
+      expect(data.journey).toHaveLength(2);
+      expect(data.terminos).toEqual(['A', 'B']);
+    });
+
+    it('importJourney() debe restaurar estado desde JSON', () => {
+      const json = JSON.stringify({
+        journey: [{ tag: 'comenzar', content: 'Test', stepNumber: 1, nextStepNeeded: true }],
+        terminos: ['X', 'Y'],
+        relaciones: ['R1'],
+        falacias: ['adecuacionismo']
+      });
+
+      const result = server.importJourney(json);
+      expect(result.success).toBe(true);
+
+      const summary = server.getSummary();
+      expect(summary.pasos).toBe(1);
+      expect(summary.terminos).toEqual(['X', 'Y']);
+      expect(summary.falacias).toEqual(['adecuacionismo']);
+    });
+
+    it('importJourney() debe fallar con JSON inválido', () => {
+      const result = server.importJourney('not valid json');
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Error al parsear');
+    });
+
+    it('importJourney() debe fallar sin array journey', () => {
+      const result = server.importJourney(JSON.stringify({ foo: 'bar' }));
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Formato inválido');
+    });
+
+    it('clearJourney() debe limpiar estado', () => {
+      server.processThought({
+        tag: 'terminar',
+        content: 'Test',
+        stepNumber: 1,
+        nextStepNeeded: true,
+        terminos: ['A', 'B']
+      });
+
+      server.clearJourney();
+
+      const summary = server.getSummary();
+      expect(summary.pasos).toBe(0);
+      expect(summary.terminos).toEqual([]);
+    });
+  });
+
+  describe('Nuevos tags: criticar y ejemplificar', () => {
+    it('debe aceptar tag criticar', () => {
+      const result = server.processThought({
+        tag: 'criticar',
+        content: 'Crítica externa al campo',
+        stepNumber: 1,
+        nextStepNeeded: true
+      });
+
+      expect(result.isError).toBeUndefined();
+      const response = JSON.parse(result.content[0].text);
+      expect(response.domain).toBe('critico');
+      expect(response.tag).toBe('criticar');
+    });
+
+    it('debe aceptar tag ejemplificar', () => {
+      const result = server.processThought({
+        tag: 'ejemplificar',
+        content: 'Ejemplo concreto en M1',
+        stepNumber: 1,
+        nextStepNeeded: true,
+        materialidad: 'M1'
+      });
+
+      expect(result.isError).toBeUndefined();
+      const response = JSON.parse(result.content[0].text);
+      expect(response.domain).toBe('critico');
+      expect(response.tag).toBe('ejemplificar');
+    });
+  });
 });
+
