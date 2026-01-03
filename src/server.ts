@@ -3,6 +3,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { RazonLiterariaServer, GNOSIS_TOOL } from './core.js';
+import { logger } from './logger.js';
 
 // ============================================================================
 // GNOSIS MCP - HTTP Server (SSE Transport)
@@ -39,7 +40,7 @@ app.get('/info', (req, res) => {
 
 // SSE endpoint para MCP
 app.get('/mcp', async (req, res) => {
-  console.log('Nueva conexión SSE establecida');
+  logger.info('Nueva conexión SSE establecida');
   
   const transport = new SSEServerTransport('/mcp', res);
   
@@ -78,18 +79,13 @@ app.post('/mcp', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`
-╔══════════════════════════════════════════════════════════════╗
-║  GNOSIS MCP v2.0.0 - HTTP Server                             ║
-║  Materialismo Filosófico de Gustavo Bueno                    ║
-╠══════════════════════════════════════════════════════════════╣
-║  Endpoints:                                                  ║
-║    GET  /health  - Health check                              ║
-║    GET  /info    - Información del servidor                  ║
-║    GET  /mcp     - SSE connection                            ║
-║    POST /mcp     - MCP messages                              ║
-╠══════════════════════════════════════════════════════════════╣
-║  Puerto: ${PORT}                                                 ║
-╚══════════════════════════════════════════════════════════════╝
-  `);
+  logger.banner('GNOSIS MCP', '2.0.0', 'http', Number(PORT));
+  logger.info('Endpoints disponibles', {
+    data: {
+      health: 'GET /health',
+      info: 'GET /info',
+      sse: 'GET /mcp',
+      messages: 'POST /mcp'
+    }
+  });
 });
