@@ -3,6 +3,7 @@
 [![MCP](https://img.shields.io/badge/MCP-Compatible-blue.svg)](https://modelcontextprotocol.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-2.0.0-brightgreen.svg)]()
+[![npm](https://img.shields.io/npm/v/gnosis-mcp.svg)](https://www.npmjs.com/package/gnosis-mcp)
 
 **Servidor MCP de Construcción Gnoseológica**
 
@@ -21,23 +22,40 @@ GNOSIS MCP es un servidor [Model Context Protocol](https://modelcontextprotocol.
 
 ## 🚀 Instalación
 
+### Opción 1: NPX (Recomendado)
+
+Ejecutar directamente sin instalación:
+
+```bash
+npx gnosis-mcp
+```
+
+### Opción 2: Instalación Global
+
+```bash
+npm install -g gnosis-mcp
+
+# Ejecutar
+gnosis-mcp
+```
+
+### Opción 3: Desde el Código Fuente
+
 ```bash
 # Clonar repositorio
-git clone https://github.com/tu-usuario/gnosis-mcp.git
-cd gnosis-mcp
+git clone https://github.com/mroaromero/razon-literaria-mcp.git
+cd razon-literaria-mcp
 
-# Instalar dependencias
+# Instalar dependencias y compilar
 npm install
-
-# Compilar TypeScript
 npm run build
 ```
 
 ---
 
-## ⚙️ Configuración
+## ⚙️ Configuración para Claude Desktop
 
-### Claude Desktop
+### Usando NPX (Recomendado)
 
 Añade a tu `claude_desktop_config.json`:
 
@@ -45,8 +63,33 @@ Añade a tu `claude_desktop_config.json`:
 {
   "mcpServers": {
     "gnosis": {
+      "command": "npx",
+      "args": ["gnosis-mcp"]
+    }
+  }
+}
+```
+
+### Usando Instalación Global
+
+```json
+{
+  "mcpServers": {
+    "gnosis": {
+      "command": "gnosis-mcp"
+    }
+  }
+}
+```
+
+### Usando Código Fuente Local
+
+```json
+{
+  "mcpServers": {
+    "gnosis": {
       "command": "node",
-      "args": ["C:/ruta/a/gnosis-mcp/dist/cli.js"]
+      "args": ["/ruta/a/razon-literaria-mcp/dist/cli.js"]
     }
   }
 }
@@ -165,7 +208,9 @@ gnosis-mcp/
 ├── src/
 │   ├── cli.ts          # Servidor CLI (stdio)
 │   ├── server.ts       # Servidor HTTP (SSE)
-│   └── core.ts         # Lógica gnoseológica
+│   ├── core.ts         # Lógica gnoseológica
+│   ├── logger.ts       # Sistema de logging
+│   └── core.test.ts    # Tests unitarios
 ├── dist/               # Código compilado
 ├── Dockerfile          # Para despliegue
 ├── smithery.yaml       # Config Smithery

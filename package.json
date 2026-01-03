@@ -8,6 +8,11 @@
     "gnosis-mcp": "dist/cli.js",
     "razon-literaria": "dist/cli.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/cli.js",
@@ -16,7 +21,8 @@
     "clean": "rm -rf dist",
     "rebuild": "npm run clean && npm run build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run rebuild && npm test"
   },
   "keywords": [
     "mcp",
@@ -34,6 +40,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/mroaromero/razon-literaria-mcp.git"
+  },
+  "homepage": "https://github.com/mroaromero/razon-literaria-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/mroaromero/razon-literaria-mcp/issues"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.1",
