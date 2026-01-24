@@ -4,6 +4,7 @@ import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { RazonLiterariaServer, GNOSIS_TOOL } from './core.js';
 import { GLOSARIO_TOOL, consultarGlosario } from './glossary.js';
+import { MERMAID_TOOL, procesarMermaidTool } from './tools/mermaidVisualizer.js';
 import { logger } from './logger.js';
 
 // ============================================================================
@@ -49,7 +50,7 @@ app.get('/info', (req, res) => {
     tags: 26,  // Updated: 24 + 2 new (criticar, ejemplificar)
     falacias: ['descriptivismo', 'teoreticismo', 'adecuacionismo'],
     materialidad: ['M1 (físico)', 'M2 (psíquico)', 'M3 (lógico)'],
-    tools: ['gnosis', 'gnosis_glosario'],
+    tools: ['gnosis', 'gnosis_glosario', 'generate_symploke_graph'],
     flujo: 'comenzar → terminar → relacionar → fenomenizar → referenciar → esenciar → definir/clasificar/demostrar/modelar → impugnar → criticar → ejemplificar → conjugar → dialectizar → verificar → cerrar → transducir'
   });
 });
@@ -79,7 +80,7 @@ app.get('/mcp', async (req, res) => {
   const gnosisBackend = new RazonLiterariaServer();
 
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: [GNOSIS_TOOL, GLOSARIO_TOOL]
+    tools: [GNOSIS_TOOL, GLOSARIO_TOOL, MERMAID_TOOL]
   }));
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -104,7 +105,11 @@ app.get('/mcp', async (req, res) => {
     if (name === "gnosis_glosario") {
       return consultarGlosario(args as any);
     }
-    
+
+    if (name === "generate_symploke_graph") {
+      return procesarMermaidTool(args as any);
+    }
+
     throw new Error(`Herramienta desconocida: ${name}`);
   });
 

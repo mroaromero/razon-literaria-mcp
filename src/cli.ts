@@ -9,6 +9,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { RazonLiterariaServer, GNOSIS_TOOL } from './core.js';
 import { GLOSARIO_TOOL, consultarGlosario, GLOSARIO } from './glossary.js';
+import { MERMAID_TOOL, procesarMermaidTool } from './tools/mermaidVisualizer.js';
 import { GNOSIS_RESOURCES, GNOSIS_PROMPT } from './prompts.js';
 import { logger } from './logger.js';
 
@@ -35,7 +36,7 @@ const gnosisBackend = new RazonLiterariaServer();
 
 // Registro de herramientas disponibles
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [GNOSIS_TOOL, GLOSARIO_TOOL]
+  tools: [GNOSIS_TOOL, GLOSARIO_TOOL, MERMAID_TOOL]
 }));
 
 // Manejo de llamadas a herramientas
@@ -49,8 +50,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (name === "gnosis_glosario") {
     return consultarGlosario(args as any);
   }
-  
-  throw new Error(`Herramienta desconocida: ${name}. Usa 'gnosis' o 'gnosis_glosario'.`);
+
+  if (name === "generate_symploke_graph") {
+    return procesarMermaidTool(args as any);
+  }
+
+  throw new Error(`Herramienta desconocida: ${name}. Herramientas disponibles: 'gnosis', 'gnosis_glosario', 'generate_symploke_graph'.`);
 });
 
 // Registro de recursos MCP
