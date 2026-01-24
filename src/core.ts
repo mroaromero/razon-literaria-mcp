@@ -1,5 +1,7 @@
 import { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { logger } from './logger.js';
+import { LogicGuard } from './engine/logicGuard.js';
+import { GeneroMaterialidad } from './ontology/materialidad.js';
 
 // ============================================================================
 // GNOSIS MCP - Servidor de Construcción Gnoseológica
@@ -206,6 +208,11 @@ export class RazonLiterariaServer {
   private terminosIdentificados: string[] = [];
   private relacionesEstablecidas: string[] = [];
   private falaciasDetectadas: string[] = [];
+  private logicGuard: LogicGuard;
+
+  constructor() {
+    this.logicGuard = new LogicGuard();
+  }
 
   private getDomainInfo(tag: string): { domain: string, icon: string, color: string } {
     for (const [domain, info] of Object.entries(GNOSEOLOGIA_DOMAINS)) {
@@ -288,14 +295,48 @@ export class RazonLiterariaServer {
         this.terminosIdentificados = [];
         this.relacionesEstablecidas = [];
         this.falaciasDetectadas = [];
+        this.logicGuard.reset();
+      }
+
+      // VALIDACIONES DEL POLICÍA LÓGICO
+
+      // Validar crítica (no permitir crítica sin M1)
+      if (['impugnar', 'criticar', 'dialectizar'].includes(data.tag)) {
+        const validacion = this.logicGuard.validarCritica();
+        if (!validacion.valido) {
+          logger.warn(validacion.error!, { tag: data.tag });
+        }
+      }
+
+      // Validar idealismo (M3 sin M1)
+      const validacionIdealismo = this.logicGuard.validarIdealismo();
+      if (!validacionIdealismo.valido) {
+        logger.warn(validacionIdealismo.error!, { tag: data.tag });
+      }
+
+      // Analizar texto para detectar falacias
+      const analisisFalacias = this.logicGuard.analizarTexto(data.content);
+      if (analisisFalacias.advertencias.length > 0) {
+        analisisFalacias.advertencias.forEach(adv => logger.warn(adv));
       }
 
       // Acumular términos y relaciones
       if (data.terminos) {
         this.terminosIdentificados.push(...data.terminos);
+        // Registrar términos en LogicGuard
+        data.terminos.forEach(termino => {
+          const genero = data.materialidad ?
+            GeneroMaterialidad[data.materialidad as keyof typeof GeneroMaterialidad] :
+            GeneroMaterialidad.M3; // Por defecto M3 si no se especifica
+          this.logicGuard.registrarTermino(termino, genero);
+        });
       }
       if (data.relaciones) {
         this.relacionesEstablecidas.push(...data.relaciones);
+        // Registrar relaciones en LogicGuard
+        data.relaciones.forEach(relacion => {
+          this.logicGuard.registrarRelacion(relacion);
+        });
       }
       if (data.falacia) {
         this.falaciasDetectadas.push(data.falacia);
@@ -317,6 +358,7 @@ export class RazonLiterariaServer {
 
       // COMENZAR: Retorna el framework completo
       if (data.tag === 'comenzar') {
+        this.logicGuard.abrirCampo();
         return {
           content: [{
             type: "text",
@@ -362,6 +404,7 @@ export class RazonLiterariaServer {
 
       // IMPUGNAR: Retorna análisis de falacia
       if (data.tag === 'impugnar' && data.falacia) {
+        this.logicGuard.marcarCritica();
         const falacia = FALACIAS[data.falacia as keyof typeof FALACIAS];
         return {
           content: [{
@@ -384,6 +427,10 @@ export class RazonLiterariaServer {
 
       // TRANSDUCIR: Cierre final
       if (data.tag === 'transducir' && !data.nextStepNeeded) {
+        // Validar transducción
+        const validacionTransduccion = this.logicGuard.validarTransduccion();
+        const reporteLogicGuard = this.logicGuard.generarReporte();
+
         const trayectoria = this.journey.map(j => j.tag).join(' → ');
         return {
           content: [{
@@ -406,7 +453,15 @@ export class RazonLiterariaServer {
                 'Las falacias se IMPUGNAN, no se integran',
                 'La transducción TRANSFORMA lo transmitido'
               ],
-              
+
+              validacion_logica: {
+                valido: validacionTransduccion.valido,
+                errores: validacionTransduccion.errores,
+                estado_gnoseologico: this.logicGuard.getEstado()
+              },
+
+              reporte_policia_logico: reporteLogicGuard,
+
               xml_output: `<transduccion status="completada">
   <conocimiento_construido>${data.content}</conocimiento_construido>
   <trayectoria>${trayectoria}</trayectoria>

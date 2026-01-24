@@ -1,7 +1,7 @@
 {
   "name": "gnosis-mcp",
-  "version": "2.1.0",
-  "description": "Servidor MCP de Construcción Gnoseológica basado en el Materialismo Filosófico de Gustavo Bueno",
+  "version": "3.0.0",
+  "description": "Motor de Diagnóstico Cultural Multi-Capa: Materialismo Filosófico + Crítica del Presente (Han/Rosa/Fisher/Sadin) + Economía Emocional (Illouz/Dubet/Sandel)",
   "type": "module",
   "main": "dist/cli.js",
   "bin": {
@@ -46,8 +46,10 @@
     "url": "https://github.com/mroaromero/razon-literaria-mcp/issues"
   },
   "dependencies": {
+    "@lancedb/lancedb": "^0.23.0",
     "@modelcontextprotocol/sdk": "^1.0.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "pdf-parse": "^2.4.5"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

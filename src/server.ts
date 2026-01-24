@@ -4,6 +4,8 @@ import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { RazonLiterariaServer, GNOSIS_TOOL } from './core.js';
 import { GLOSARIO_TOOL, consultarGlosario } from './glossary.js';
+import { MERMAID_TOOL, procesarMermaidTool } from './tools/mermaidVisualizer.js';
+import { CULTURAL_PATHOLOGY_TOOL, procesarCulturalPathology } from './tools/culturalPathologyTool.js';
 import { logger } from './logger.js';
 
 // ============================================================================
@@ -42,14 +44,14 @@ app.get('/health', (req, res) => {
 app.get('/info', (req, res) => {
   res.json({
     name: 'GNOSIS MCP',
-    version: '2.0.0',
+    version: '3.0.0',
     description: 'Servidor de Construcción Gnoseológica basado en el Materialismo Filosófico',
     authors: ['Gustavo Bueno', 'Jesús G. Maestro'],
     domains: 8,
     tags: 26,  // Updated: 24 + 2 new (criticar, ejemplificar)
     falacias: ['descriptivismo', 'teoreticismo', 'adecuacionismo'],
     materialidad: ['M1 (físico)', 'M2 (psíquico)', 'M3 (lógico)'],
-    tools: ['gnosis', 'gnosis_glosario'],
+    tools: ['gnosis', 'gnosis_glosario', 'generate_symploke_graph', 'cultural_pathology_analysis'],
     flujo: 'comenzar → terminar → relacionar → fenomenizar → referenciar → esenciar → definir/clasificar/demostrar/modelar → impugnar → criticar → ejemplificar → conjugar → dialectizar → verificar → cerrar → transducir'
   });
 });
@@ -71,7 +73,7 @@ app.get('/mcp', async (req, res) => {
   const transport = new SSEServerTransport('/mcp', res);
   
   const server = new Server(
-    { name: "gnosis-mcp-http", version: "2.0.0" },
+    { name: "gnosis-mcp-http", version: "3.0.0" },
     { capabilities: { tools: {} } }
   );
   
@@ -79,7 +81,7 @@ app.get('/mcp', async (req, res) => {
   const gnosisBackend = new RazonLiterariaServer();
 
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: [GNOSIS_TOOL, GLOSARIO_TOOL]
+    tools: [GNOSIS_TOOL, GLOSARIO_TOOL, MERMAID_TOOL, CULTURAL_PATHOLOGY_TOOL]
   }));
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -104,7 +106,15 @@ app.get('/mcp', async (req, res) => {
     if (name === "gnosis_glosario") {
       return consultarGlosario(args as any);
     }
-    
+
+    if (name === "generate_symploke_graph") {
+      return procesarMermaidTool(args as any);
+    }
+
+    if (name === "cultural_pathology_analysis") {
+      return procesarCulturalPathology(args as any);
+    }
+
     throw new Error(`Herramienta desconocida: ${name}`);
   });
 
@@ -121,7 +131,7 @@ app.post('/mcp', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  logger.banner('GNOSIS MCP', '2.0.0', 'http', Number(PORT));
+  logger.banner('GNOSIS MCP', '3.0.0', 'http', Number(PORT));
   logger.info('Endpoints disponibles', {
     data: {
       health: 'GET /health',
