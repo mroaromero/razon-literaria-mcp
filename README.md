@@ -116,6 +116,111 @@ Disponible en `http://localhost:3000/mcp`
 
 ---
 
+## ✅ Verificación en Claude Desktop
+
+Después de configurar, **reinicia Claude Desktop** y verifica que GNOSIS MCP esté activo:
+
+### 1. Verificar Conexión
+
+En Claude Desktop, busca el ícono 🔌 (MCP) en la parte inferior. Deberías ver:
+- **gnosis** (4 herramientas disponibles)
+
+### 2. Verificar Herramientas
+
+Puedes preguntar a Claude:
+```
+¿Qué herramientas MCP tienes disponibles de gnosis?
+```
+
+Deberías ver:
+- ✅ `gnosis` - Construcción gnoseológica (24 tags operatorios)
+- ✅ `gnosis_glosario` - Diccionario filosófico (20 términos)
+- ✅ `generate_symploke_graph` - Visualización Mermaid
+- ✅ `cultural_pathology_analysis` - Diagnóstico cultural (5 modos) ⭐ v3.0
+
+### 3. Probar Funcionalidad
+
+**Ejemplo 1: Análisis Cultural (v3.0)**
+```
+Usa cultural_pathology_analysis con análisis tipo "psychopolitical_scan" para diagnosticar la cultura del hustle y la productividad extrema.
+```
+
+**Ejemplo 2: Análisis Gnoseológico**
+```
+Usa gnosis con el tag "comenzar" para analizar el concepto de "democracia digital".
+```
+
+**Ejemplo 3: Consultar Glosario**
+```
+Usa gnosis_glosario para buscar el término "symploke".
+```
+
+**Ejemplo 4: Visualización**
+```
+Usa generate_symploke_graph tipo "falacias" para mostrar el diagrama del circularismo vs. las falacias.
+```
+
+### 4. Resources MCP Disponibles
+
+GNOSIS MCP también expone **2 resources**:
+
+1. **`gnosis://prompt/principal`** - System Prompt completo del Patólogo Cultural
+2. **`gnosis://glosario/completo`** - Diccionario filosófico en JSON
+
+Para acceder en Claude Desktop:
+```
+Muéstrame el recurso gnosis://prompt/principal
+```
+
+---
+
+## 🔧 Troubleshooting para Claude Desktop
+
+### Problema: "No se encuentra el servidor gnosis"
+
+**Solución 1**: Si usas NPX, asegúrate de tener conexión a internet la primera vez.
+
+**Solución 2**: Usa instalación local:
+```bash
+cd /ruta/a/razon-literaria-mcp
+npm install
+npm run build
+```
+
+Luego en `claude_desktop_config.json`:
+```json
+{
+  "mcpServers": {
+    "gnosis": {
+      "command": "node",
+      "args": ["/ruta/absoluta/a/razon-literaria-mcp/dist/cli.js"]
+    }
+  }
+}
+```
+
+### Problema: "Error al ejecutar herramienta"
+
+**Solución**: Verifica los logs de Claude Desktop:
+- **macOS**: `~/Library/Logs/Claude/mcp*.log`
+- **Windows**: `%APPDATA%\Claude\logs\mcp*.log`
+
+### Problema: "System prompt muy largo"
+
+Si Claude Desktop tiene problemas con el prompt extenso:
+
+1. El system prompt v3.0 es largo (161 líneas) pero optimizado
+2. Claude Desktop debería manejarlo sin problemas
+3. Si hay issues, reportar en: https://github.com/mroaromero/razon-literaria-mcp/issues
+
+### Problema: "Herramientas no aparecen"
+
+Verifica que el archivo de configuración esté en la ubicación correcta:
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+---
+
 ## 🔧 Arquitectura
 
 ### 8 Dominios Gnoseológicos
