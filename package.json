@@ -1,7 +1,7 @@
 {
   "name": "gnosis-mcp",
-  "version": "2.1.0",
-  "description": "Servidor MCP de Construcción Gnoseológica basado en el Materialismo Filosófico de Gustavo Bueno",
+  "version": "3.0.0",
+  "description": "Motor de Diagnóstico Cultural Multi-Capa: Materialismo Filosófico + Crítica del Presente (Han/Rosa/Fisher/Sadin) + Economía Emocional (Illouz/Dubet/Sandel)",
   "type": "module",
   "main": "dist/cli.js",
   "bin": {

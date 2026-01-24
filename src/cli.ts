@@ -10,6 +10,7 @@ import {
 import { RazonLiterariaServer, GNOSIS_TOOL } from './core.js';
 import { GLOSARIO_TOOL, consultarGlosario, GLOSARIO } from './glossary.js';
 import { MERMAID_TOOL, procesarMermaidTool } from './tools/mermaidVisualizer.js';
+import { CULTURAL_PATHOLOGY_TOOL, procesarCulturalPathology } from './tools/culturalPathologyTool.js';
 import { GNOSIS_RESOURCES, GNOSIS_PROMPT } from './prompts.js';
 import { logger } from './logger.js';
 
@@ -19,9 +20,9 @@ import { logger } from './logger.js';
 // ============================================================================
 
 const server = new Server(
-  { 
-    name: "gnosis-mcp", 
-    version: "2.0.0" 
+  {
+    name: "gnosis-mcp",
+    version: "3.0.0" 
   },
   { 
     capabilities: { 
@@ -36,7 +37,7 @@ const gnosisBackend = new RazonLiterariaServer();
 
 // Registro de herramientas disponibles
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [GNOSIS_TOOL, GLOSARIO_TOOL, MERMAID_TOOL]
+  tools: [GNOSIS_TOOL, GLOSARIO_TOOL, MERMAID_TOOL, CULTURAL_PATHOLOGY_TOOL]
 }));
 
 // Manejo de llamadas a herramientas
@@ -55,7 +56,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return procesarMermaidTool(args as any);
   }
 
-  throw new Error(`Herramienta desconocida: ${name}. Herramientas disponibles: 'gnosis', 'gnosis_glosario', 'generate_symploke_graph'.`);
+  if (name === "cultural_pathology_analysis") {
+    return procesarCulturalPathology(args as any);
+  }
+
+  throw new Error(`Herramienta desconocida: ${name}. Herramientas disponibles: 'gnosis', 'gnosis_glosario', 'generate_symploke_graph', 'cultural_pathology_analysis'.`);
 });
 
 // Registro de recursos MCP
@@ -98,5 +103,5 @@ server.connect(transport).catch((error) => {
   process.exit(1);
 });
 
-logger.banner('GNOSIS MCP', '2.0.0', 'cli');
+logger.banner('GNOSIS MCP', '3.0.0', 'cli');
 
