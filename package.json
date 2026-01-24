@@ -1,7 +1,7 @@
 {
   "name": "gnosis-mcp",
-  "version": "3.0.0",
-  "description": "Motor de Diagnóstico Cultural Multi-Capa: Materialismo Filosófico + Crítica del Presente (Han/Rosa/Fisher/Sadin) + Economía Emocional (Illouz/Dubet/Sandel)",
+  "version": "4.0.0",
+  "description": "Multi-Layer Cultural Diagnostic Engine (OOP): Philosophical Materialism + Cultural Critique (Han/Rosa/Fisher/Sadin/Berardi) + Emotional Economy (Illouz/Dubet/Sandel)",
   "type": "module",
   "main": "dist/cli.js",
   "bin": {
@@ -27,13 +27,16 @@
   "keywords": [
     "mcp",
     "model-context-protocol",
-    "materialismo-filosofico",
+    "philosophical-materialism",
     "gustavo-bueno",
-    "gnoseologia",
-    "filosofia",
-    "critica-literaria",
+    "gnoseology",
+    "cultural-pathology",
+    "psychopolitics",
+    "critical-theory",
     "llm",
-    "ai"
+    "ai",
+    "oop",
+    "typescript"
   ],
   "author": "Materialismo Filosófico",
   "license": "MIT",
