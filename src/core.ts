@@ -1,6 +1,7 @@
 import { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { logger } from './logger.js';
-import { LogicGuard } from './engine/logicGuard.js';
+import { LogicGuard } from './core/LogicGuard.js';
+import { MaterialityGenus } from './diagnosticators/base/Diagnosis.js';
 import { GeneroMaterialidad } from './ontology/materialidad.js';
 
 // ============================================================================
@@ -302,22 +303,22 @@ export class RazonLiterariaServer {
 
       // Validar crítica (no permitir crítica sin M1)
       if (['impugnar', 'criticar', 'dialectizar'].includes(data.tag)) {
-        const validacion = this.logicGuard.validarCritica();
-        if (!validacion.valido) {
+        const validacion = this.logicGuard.validateCritique();
+        if (!validacion.valid) {
           logger.warn(validacion.error!, { tag: data.tag });
         }
       }
 
       // Validar idealismo (M3 sin M1)
-      const validacionIdealismo = this.logicGuard.validarIdealismo();
-      if (!validacionIdealismo.valido) {
+      const validacionIdealismo = this.logicGuard.validateIdealism();
+      if (!validacionIdealismo.valid) {
         logger.warn(validacionIdealismo.error!, { tag: data.tag });
       }
 
       // Analizar texto para detectar falacias
-      const analisisFalacias = this.logicGuard.analizarTexto(data.content);
-      if (analisisFalacias.advertencias.length > 0) {
-        analisisFalacias.advertencias.forEach(adv => logger.warn(adv));
+      const analisisFalacias = this.logicGuard.analyzeText(data.content);
+      if (analisisFalacias.warnings.length > 0) {
+        analisisFalacias.warnings.forEach((adv: string) => logger.warn(adv));
       }
 
       // Acumular términos y relaciones
@@ -325,17 +326,18 @@ export class RazonLiterariaServer {
         this.terminosIdentificados.push(...data.terminos);
         // Registrar términos en LogicGuard
         data.terminos.forEach(termino => {
+          // Map GeneroMaterialidad to MaterialityGenus
           const genero = data.materialidad ?
-            GeneroMaterialidad[data.materialidad as keyof typeof GeneroMaterialidad] :
-            GeneroMaterialidad.M3; // Por defecto M3 si no se especifica
-          this.logicGuard.registrarTermino(termino, genero);
+            MaterialityGenus[data.materialidad as keyof typeof MaterialityGenus] :
+            MaterialityGenus.M3; // Por defecto M3 si no se especifica
+          this.logicGuard.registerTerm(termino, genero);
         });
       }
       if (data.relaciones) {
         this.relacionesEstablecidas.push(...data.relaciones);
         // Registrar relaciones en LogicGuard
         data.relaciones.forEach(relacion => {
-          this.logicGuard.registrarRelacion(relacion);
+          this.logicGuard.registerRelation(relacion);
         });
       }
       if (data.falacia) {
@@ -358,7 +360,7 @@ export class RazonLiterariaServer {
 
       // COMENZAR: Retorna el framework completo
       if (data.tag === 'comenzar') {
-        this.logicGuard.abrirCampo();
+        this.logicGuard.openField();
         return {
           content: [{
             type: "text",
@@ -404,7 +406,7 @@ export class RazonLiterariaServer {
 
       // IMPUGNAR: Retorna análisis de falacia
       if (data.tag === 'impugnar' && data.falacia) {
-        this.logicGuard.marcarCritica();
+        this.logicGuard.markCritique();
         const falacia = FALACIAS[data.falacia as keyof typeof FALACIAS];
         return {
           content: [{
@@ -428,8 +430,8 @@ export class RazonLiterariaServer {
       // TRANSDUCIR: Cierre final
       if (data.tag === 'transducir' && !data.nextStepNeeded) {
         // Validar transducción
-        const validacionTransduccion = this.logicGuard.validarTransduccion();
-        const reporteLogicGuard = this.logicGuard.generarReporte();
+        const validacionTransduccion = this.logicGuard.validateTransduction();
+        const reporteLogicGuard = this.logicGuard.generateReport();
 
         const trayectoria = this.journey.map(j => j.tag).join(' → ');
         return {
@@ -455,9 +457,9 @@ export class RazonLiterariaServer {
               ],
 
               validacion_logica: {
-                valido: validacionTransduccion.valido,
-                errores: validacionTransduccion.errores,
-                estado_gnoseologico: this.logicGuard.getEstado()
+                valido: validacionTransduccion.valid,
+                errores: validacionTransduccion.errors,
+                estado_gnoseologico: this.logicGuard.getState()
               },
 
               reporte_policia_logico: reporteLogicGuard,

@@ -1,573 +1,308 @@
-# 🔷 GNOSIS MCP
+# GNOSIS MCP v4.0 🧬
 
-[![MCP](https://img.shields.io/badge/MCP-Compatible-blue.svg)](https://modelcontextprotocol.io)
+> **Multi-Layer Cultural Diagnostic Engine** - Object-Oriented Architecture  
+> Based on Philosophical Materialism (Gustavo Bueno) + Critical Theory
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
+[![MCP](https://img.shields.io/badge/MCP-1.0-green)](https://modelcontextprotocol.io/)
+[![Architecture](https://img.shields.io/badge/Architecture-OOP-orange)](https://en.wikipedia.org/wiki/Object-oriented_programming)
+[![Version](https://img.shields.io/badge/version-4.0.0-red)](https://github.com/mroaromero/razon-literaria-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-3.0.0-red.svg)]()
-[![npm](https://img.shields.io/npm/v/gnosis-mcp.svg)](https://www.npmjs.com/package/gnosis-mcp)
-
-**Motor de Diagnóstico Cultural Multi-Capa**
-
-Sistema de análisis crítico que integra:
-- **Materialismo Filosófico** (Gustavo Bueno / Jesús G. Maestro / Santiago Armesilla)
-- **Diagnóstico Cultural** (Byung-Chul Han / Hartmut Rosa / Mark Fisher / Eric Sadin / Franco Berardi)
-- **Economía Emocional** (Eva Illouz / François Dubet / Michael Sandel)
 
 ---
 
-## 📖 ¿Qué es GNOSIS MCP?
+## 🎯 What is GNOSIS MCP?
 
-GNOSIS MCP es un servidor [Model Context Protocol](https://modelcontextprotocol.io) que transforma un LLM en un **patólogo cultural**: un sistema de diagnóstico crítico que combina el rigor gnoseológico del Materialismo Filosófico con la fenomenología del presente y el análisis de las pasiones políticas.
+**GNOSIS MCP** transforms an LLM into a **Cultural Pathologist** - a multi-layer diagnostic system that reveals power structures and cultural pathologies instead of offering psychological consolation.
 
-A diferencia de frameworks contemplativos o autoayuda, GNOSIS **diagnostica patologías culturales** y **revela estructuras de poder**.
+### The Three Layers
 
-> *"El ser, o es material, o no es."*
-> — Gustavo Bueno
-
-> *"El sujeto neoliberal se explota a sí mismo creyéndose libre."*
-> — Byung-Chul Han
-
-> *"Es más fácil imaginar el fin del mundo que el fin del capitalismo."*
-> — Mark Fisher
+```
+┌─────────────────────────────────────────────────────────┐
+│  LAYER 1: Philosophical Materialism (Validation)        │
+│  LogicGuard + M1/M2/M3 Ontology + Fallacy Detection   │
+└─────────────────────────────────────────────────────────┘
+                           ↓
+┌─────────────────────────────────────────────────────────┐
+│  LAYER 2: Cultural Diagnosis (8 Diagnosticators - OOP)  │
+│  Han • Rosa • Fisher • Sadin • Berardi                  │
+└─────────────────────────────────────────────────────────┘
+                           ↓
+┌─────────────────────────────────────────────────────────┐
+│  LAYER 3: Emotional Economy (3 Diagnosticators - OOP)   │
+│  Illouz • Dubet • Sandel                                │
+└─────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 🚀 Instalación
+## 🚀 Quick Start (Claude Desktop)
 
-### Opción 1: NPX (Recomendado)
-
-Ejecutar directamente sin instalación:
+### 1. Installation
 
 ```bash
-npx gnosis-mcp
-```
-
-### Opción 2: Instalación Global
-
-```bash
-npm install -g gnosis-mcp
-
-# Ejecutar
-gnosis-mcp
-```
-
-### Opción 3: Desde el Código Fuente
-
-```bash
-# Clonar repositorio
+# Clone repository
 git clone https://github.com/mroaromero/razon-literaria-mcp.git
 cd razon-literaria-mcp
 
-# Instalar dependencias y compilar
+# Install and build
 npm install
 npm run build
 ```
 
----
+### 2. Configure Claude Desktop
 
-## ⚙️ Configuración para Claude Desktop
-
-### Usando NPX (Recomendado)
-
-Añade a tu `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "gnosis": {
-      "command": "npx",
-      "args": ["gnosis-mcp"]
-    }
-  }
-}
-```
-
-### Usando Instalación Global
-
-```json
-{
-  "mcpServers": {
-    "gnosis": {
-      "command": "gnosis-mcp"
-    }
-  }
-}
-```
-
-### Usando Código Fuente Local
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
 
 ```json
 {
   "mcpServers": {
     "gnosis": {
       "command": "node",
-      "args": ["/ruta/a/razon-literaria-mcp/dist/cli.js"]
+      "args": ["/absolute/path/to/razon-literaria-mcp/dist/cli.js"]
     }
   }
 }
 ```
 
-### Servidor HTTP (para Smithery/Docker)
+### 3. Restart Claude Desktop
+
+Look for the 🔌 icon - you should see **gnosis** with 4 tools available.
+
+---
+
+## 📚 Architecture (v4.0 - OOP)
+
+### New in v4.0
+
+✅ **Object-Oriented Architecture**  
+✅ **English Codebase** (Spanish philosophy preserved)  
+✅ **8 Diagnostic Classes** (polymorphic, extensible)  
+✅ **CulturalPathologist Orchestrator**  
+✅ **Type-Safe Interfaces** (`IDiagnosticator`)  
+
+### File Structure
+
+```
+src/
+├── diagnosticators/
+│   ├── base/
+│   │   ├── IDiagnosticator.ts       # Main interface
+│   │   ├── BaseDiagnosticator.ts    # Abstract base
+│   │   └── Diagnosis.ts              # Type definitions
+│   ├── layer2/                       # Cultural Diagnosis
+│   │   ├── HanDiagnosticator.ts
+│   │   ├── RosaDiagnosticator.ts
+│   │   ├── FisherDiagnosticator.ts
+│   │   ├── SadinDiagnosticator.ts
+│   │   └── BerardiDiagnosticator.ts
+│   ├── layer3/                       # Emotional Economy
+│   │   ├── IllouzDiagnosticator.ts
+│   │   ├── DubetDiagnosticator.ts
+│   │   └── SandelDiagnosticator.ts
+│   └── CulturalPathologist.ts        # Orchestrator
+├── core/
+│   └── LogicGuard.ts                 # Layer 1 validation
+├── tools/
+│   └── PathologyTool.ts              # MCP tool (v4)
+├── cli.ts                            # Claude Desktop entry
+└── server.ts                         # HTTP server (SSE)
+```
+
+---
+
+## 🔧 MCP Tools Available
+
+### 1. `cultural_pathology_analysis` ⭐ **MAIN TOOL**
+
+**Modes**:
+- `full_diagnosis`: All 8 diagnosticators
+- `layer_diagnosis`: Specific layer (2 or 3)
+- `author_diagnosis`: Specific author (Han, Rosa, etc.)
+- `analyze_temporality`: Rosa's temporal analysis
+- `psychopolitical_scan`: Han's psychopolitical framework
+- `detect_technofeudalism`: Sadin's technofeudalism
+- `emotional_economy`: Illouz's emotional capitalism
+
+**Example**:
+```json
+{
+  "mode": "full_diagnosis",
+  "description": "I'm burned out but feel guilty for not being productive."
+}
+```
+
+### 2. `gnosis` - Gnoseological Operations
+- 24 operational tags (Layer 1)
+- M1/M2/M3 ontology
+
+### 3. `gnosis_glosario` - Philosophical Glossary
+- 20 philosophical terms
+
+### 4. `generate_symploke_graph` - Mermaid Visualization
+- Visualize relations and structures
+
+---
+
+## 💡 Example Usage
+
+### Diagnosing Burnout
+
+```typescript
+// Input
+{
+  "mode": "full_diagnosis",
+  "description": "I work 12h/day remotely. I never disconnect. I feel guilty if I'm not productive."
+}
+
+// Output (8 diagnosticators)
+{
+  "diagnoses": [
+    {
+      "diagnosticator": "Byung-Chul Han",
+      "layer": 2,
+      "diagnosis": {
+        "pathology": "self_exploitation",
+        "confidence": 0.95,
+        "description": "Neoliberal self-exploitation. You exploit yourself believing you're free.",
+        "recommendation": "Recognize burnout is systemic, not personal."
+      }
+    },
+    {
+      "diagnosticator": "Hartmut Rosa",
+      "layer": 2,
+      "diagnosis": {
+        "pathology": "blind_acceleration",
+        "confidence": 0.88,
+        "description": "Acceleration without resonance. No time to pause.",
+        "recommendation": "Create non-productive spaces of resonance."
+      }
+    },
+    // ... 6 more diagnosticators
+  ],
+  "criticalPathologies": [...]  // Confidence > 70%
+}
+```
+
+---
+
+## 🧬 The 8 Diagnosticators (OOP Classes)
+
+### Layer 2: Cultural Diagnosis
+
+| Diagnosticator | Focus | Key Pathologies |
+|---------------|-------|----------------|
+| **HanDiagnosticator** | Psychopolitics | Self-exploitation, Performance society, Infocracy |
+| **RosaDiagnosticator** | Temporality | Alienation, Blind acceleration, Resonance loss |
+| **FisherDiagnosticator** | Capitalism | Capitalist realism, Hauntology, Hedonic depression |
+| **SadinDiagnosticator** | Technology | Infocracy, Technofeudalism, AI as oracle |
+| **BerardiDiagnosticator** | Labor | Semiocapitalism, Cognitive precarity, Panic/depression |
+
+### Layer 3: Emotional Economy
+
+| Diagnosticator | Focus | Key Pathologies |
+|---------------|-------|----------------|
+| **IllouzDiagnosticator** | Emotions | Emotional capitalism, Liquid love, Therapeutization |
+| **DubetDiagnosticator** | Passions | Sad passions, Resentment, Humiliation |
+| **SandelDiagnosticator** | Merit | Tyranny of merit, Credentialism, Meritocratic hubris |
+
+---
+
+## 🔬 Philosophical Foundation
+
+### Layer 1: Gustavo Bueno's Philosophical Materialism
+
+**Core Principles**:
+1. **Radical Materialism**: "Being is either material, or it is not"
+   - M1: Physical (bodies, devices)
+   - M2: Psychological (emotions, attention)
+   - M3: Logical (ideas, institutions)
+
+2. **Symploké**: "Some terms relate to others, but NOT to all"
+   - Rejects holism ("everything connected")
+   - Rejects atomism ("nothing connected")
+
+3. **Circularity**: Knowledge must connect M3 back to M1
+
+**Fallacies Detected**:
+- **Descriptivism**: Data without theory
+- **Theoreticism**: Theory without facts
+- **Adequationism**: Juxtaposition without synthesis
+
+---
+
+## 🛠️ Development
+
+### Build
+
+```bash
+npm run build
+```
+
+### Test
+
+```bash
+npm test
+```
+
+### Run HTTP Server
 
 ```bash
 npm run start:http
+# Available at http://localhost:3000/mcp
 ```
 
-Disponible en `http://localhost:3000/mcp`
+### Endpoints
+
+- `/health` - Health check
+- `/info` - Full diagnosticators info
+- `/stats` - Usage statistics
+- `/mcp` - SSE MCP endpoint
 
 ---
 
-## ✅ Verificación en Claude Desktop
+## 📖 Documentation
 
-Después de configurar, **reinicia Claude Desktop** y verifica que GNOSIS MCP esté activo:
-
-### 1. Verificar Conexión
-
-En Claude Desktop, busca el ícono 🔌 (MCP) en la parte inferior. Deberías ver:
-- **gnosis** (4 herramientas disponibles)
-
-### 2. Verificar Herramientas
-
-Puedes preguntar a Claude:
-```
-¿Qué herramientas MCP tienes disponibles de gnosis?
-```
-
-Deberías ver:
-- ✅ `gnosis` - Construcción gnoseológica (24 tags operatorios)
-- ✅ `gnosis_glosario` - Diccionario filosófico (20 términos)
-- ✅ `generate_symploke_graph` - Visualización Mermaid
-- ✅ `cultural_pathology_analysis` - Diagnóstico cultural (5 modos) ⭐ v3.0
-
-### 3. Probar Funcionalidad
-
-**Ejemplo 1: Análisis Cultural (v3.0)**
-```
-Usa cultural_pathology_analysis con análisis tipo "psychopolitical_scan" para diagnosticar la cultura del hustle y la productividad extrema.
-```
-
-**Ejemplo 2: Análisis Gnoseológico**
-```
-Usa gnosis con el tag "comenzar" para analizar el concepto de "democracia digital".
-```
-
-**Ejemplo 3: Consultar Glosario**
-```
-Usa gnosis_glosario para buscar el término "symploke".
-```
-
-**Ejemplo 4: Visualización**
-```
-Usa generate_symploke_graph tipo "falacias" para mostrar el diagrama del circularismo vs. las falacias.
-```
-
-### 4. Resources MCP Disponibles
-
-GNOSIS MCP también expone **2 resources**:
-
-1. **`gnosis://prompt/principal`** - System Prompt completo del Patólogo Cultural
-2. **`gnosis://glosario/completo`** - Diccionario filosófico en JSON
-
-Para acceder en Claude Desktop:
-```
-Muéstrame el recurso gnosis://prompt/principal
-```
+- **README_v4.md**: Complete v4.0 technical documentation
+- **CLAUDE_DESKTOP.md**: Claude Desktop integration guide
+- **package.json**: v4.0.0 with OOP keywords
 
 ---
 
-## 🔧 Troubleshooting para Claude Desktop
+## 🤝 Contributing
 
-### Problema: "No se encuentra el servidor gnosis"
-
-**Solución 1**: Si usas NPX, asegúrate de tener conexión a internet la primera vez.
-
-**Solución 2**: Usa instalación local:
-```bash
-cd /ruta/a/razon-literaria-mcp
-npm install
-npm run build
-```
-
-Luego en `claude_desktop_config.json`:
-```json
-{
-  "mcpServers": {
-    "gnosis": {
-      "command": "node",
-      "args": ["/ruta/absoluta/a/razon-literaria-mcp/dist/cli.js"]
-    }
-  }
-}
-```
-
-### Problema: "Error al ejecutar herramienta"
-
-**Solución**: Verifica los logs de Claude Desktop:
-- **macOS**: `~/Library/Logs/Claude/mcp*.log`
-- **Windows**: `%APPDATA%\Claude\logs\mcp*.log`
-
-### Problema: "System prompt muy largo"
-
-Si Claude Desktop tiene problemas con el prompt extenso:
-
-1. El system prompt v3.0 es largo (161 líneas) pero optimizado
-2. Claude Desktop debería manejarlo sin problemas
-3. Si hay issues, reportar en: https://github.com/mroaromero/razon-literaria-mcp/issues
-
-### Problema: "Herramientas no aparecen"
-
-Verifica que el archivo de configuración esté en la ubicación correcta:
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+This is an academic/philosophical project. Contributions welcome for:
+- New diagnosticators (Layer 4: Speculative Realism?)
+- Performance optimizations
+- Additional tests
+- Documentation improvements
 
 ---
 
-## 🔧 Arquitectura
+## 📜 License
 
-### 8 Dominios Gnoseológicos
-
-| Dominio | Tags | Función |
-|---------|------|---------|
-| **Umbral** | `comenzar` | Apertura del campo categorial |
-| **Sintáctico** | `terminar`, `relacionar`, `operar` | Operar sobre signos |
-| **Semántico** | `fenomenizar`, `referenciar`, `esenciar` | Conectar con referentes |
-| **Pragmático** | `autologizar`, `dialogizar`, `normar` | Dimensión del sujeto |
-| **Inmanente** | `definir`, `clasificar`, `demostrar`, `modelar` | Figuras científicas |
-| **Crítico** | `impugnar`, `symploke`, `conjugar`, `dialectizar` | Análisis dialéctico |
-| **Ontológico** | `materializar`, `fenomenologizar`, `logificar` | Géneros de materialidad |
-| **Cierre** | `verificar`, `cerrar`, `transducir` | Transducción final |
-
-### 24 Tags Operatorios
-
-```
-comenzar → terminar → relacionar → fenomenizar → referenciar → esenciar
-→ definir/clasificar/demostrar/modelar 
-→ impugnar → symploke → conjugar → dialectizar
-→ verificar → cerrar → transducir
-```
-
-### Sistema de Falacias
-
-| Falacia | Fórmula | Descripción |
-|---------|---------|-------------|
-| **Descriptivismo** | α sin β | Solo hechos, sin teoría |
-| **Teoreticismo** | β sin α | Solo teoría, sin hechos |
-| **Adecuacionismo** | α + β | Yuxtaposición sin conjugar |
-
-**Solución:** CIRCULARISMO (conjugación dialéctica α ↔ β)
-
-### Géneros de Materialidad
-
-| Género | Contenido | Ejemplos |
-|--------|-----------|----------|
-| **M1** | Físico-corpóreo | Cuerpos, dispositivos, infraestructura |
-| **M2** | Psicológico | Procesos mentales, emociones, atención |
-| **M3** | Lógico-abstracto | Ideas, estructuras, instituciones |
-
-### Figuras Inmanentes
-
-| Figura | Notación | Descripción |
-|--------|----------|-------------|
-| **Definir** | T < T | Término desde términos |
-| **Clasificar** | T < R | Término desde relaciones |
-| **Demostrar** | R < R | Relación desde relaciones |
-| **Modelar** | R < T | Relación desde términos |
+MIT License - See LICENSE file
 
 ---
 
-## 💡 Uso
+## 🎓 Authorities Referenced
 
-### Ejemplo: Analizar el "doble discurso" tecnológico
-
-```
-Usuario: Usa gnosis para analizar por qué las escuelas prohíben móviles pero promueven IA.
-```
-
-El sistema ejecutará:
-
-```xml
-<gnosis_step domain="umbral" tag="comenzar" step="1">
-  <content>Campo: Filosofía de la educación / Filosofía de la tecnología</content>
-</gnosis_step>
-
-<gnosis_step domain="sintactico" tag="terminar" step="2">
-  <terminos>
-    <T1>Tecnología móvil (M1 + M3)</T1>
-    <T2>IA educativa (M3)</T2>
-    <T3>Institución escolar (M1 + M3)</T3>
-    <T4>Estudiante (M1 + M2)</T4>
-  </terminos>
-</gnosis_step>
-
-<gnosis_step domain="critico" tag="impugnar" step="5">
-  <falacia_detectada>
-    <nombre>ADECUACIONISMO</nombre>
-    <formula>α + β</formula>
-    <correccion>Aplicar CIRCULARISMO</correccion>
-  </falacia_detectada>
-</gnosis_step>
-
-<transduccion status="completada">
-  <conocimiento_construido>
-    El "doble discurso" tecnológico es un mecanismo de gobernanza 
-    que yuxtapone posiciones sin conjugarlas. La diferencia no es 
-    gnoseológica sino POLÍTICA: quién controla el acceso.
-  </conocimiento_construido>
-</transduccion>
-```
+**Layer 1**: Gustavo Bueno, Jesús G. Maestro, Santiago Armesilla  
+**Layer 2**: Byung-Chul Han, Hartmut Rosa, Mark Fisher, Eric Sadin, Franco Berardi  
+**Layer 3**: Eva Illouz, François Dubet, Michael Sandel  
 
 ---
 
-## 📁 Estructura del Proyecto
+## 🔗 Links
 
-```
-gnosis-mcp/
-├── src/
-│   ├── engine/              # Motor lógico universal (Layer 1)
-│   │   └── logicGuard.ts    # Policía Lógico (validador gnoseológico)
-│   ├── ontology/            # Definiciones ontológicas (Layer 1)
-│   │   ├── materialidad.ts  # M1, M2, M3 + Ejes + Categorías Operatorias
-│   │   └── falacias.ts      # Descriptivismo, Teoreticismo, Adecuacionismo
-│   ├── diagnosis/           # 🆕 Diagnóstico cultural (Layer 2)
-│   │   └── culturalPathology.ts  # Han, Rosa, Fisher, Sadin, Berardi
-│   ├── emotions/            # 🆕 Economía emocional (Layer 3)
-│   │   └── affectiveCapitalism.ts  # Illouz, Dubet, Sandel
-│   ├── rag/                 # Sistema RAG (opcional)
-│   │   └── vectorStore.ts   # Ingesta de PDFs (Maestro, Armesilla)
-│   ├── tools/               # Herramientas MCP expuestas
-│   │   ├── mermaidVisualizer.ts      # Visualización Symploké
-│   │   ├── culturalPathologyTool.ts  # 🆕 Análisis cultural multi-capa
-│   │   └── index.ts                  # Exportaciones centralizadas
-│   ├── cli.ts               # Servidor CLI (stdio)
-│   ├── server.ts            # Servidor HTTP (SSE)
-│   ├── core.ts              # Lógica gnoseológica central
-│   ├── prompts.ts           # 🆕 System prompts v3.0 (Patólogo Cultural)
-│   ├── glossary.ts          # Diccionario filosófico
-│   ├── logger.ts            # Sistema de logging
-│   └── core.test.ts         # Tests unitarios
-├── dist/                    # Código compilado
-├── Dockerfile               # Para despliegue
-├── smithery.yaml            # Config Smithery
-├── package.json             # v3.0.0
-├── tsconfig.json
-└── README.md
-```
+- **Repository**: https://github.com/mroaromero/razon-literaria-mcp
+- **MCP Protocol**: https://modelcontextprotocol.io
+- **Issues**: https://github.com/mroaromero/razon-literaria-mcp/issues
 
 ---
 
-## 🆕 GNOSIS v3.0: Patólogo Cultural
-
-### Arquitectura de 3 Capas
-
-#### LAYER 1: Materialismo Filosófico (Estructura)
-**Autoridades**: Gustavo Bueno, Jesús G. Maestro, Santiago Armesilla
-- Validación lógica (Cierre Categorial)
-- Ontología (M1/M2/M3)
-- Detección de falacias (Descriptivismo, Teoreticismo, Adecuacionismo)
-- Política del Estado
-
-#### LAYER 2: Diagnóstico Cultural (Fenomenología del Presente)
-**Autoridades**: Byung-Chul Han, Hartmut Rosa, Mark Fisher, Eric Sadin, Franco Berardi
-- **Psicopolítica** (Han): Auto-explotación, Sociedad del Rendimiento, Infocracia
-- **Temporalidad** (Rosa): Resonancia vs. Alienación, Tiempo Narrativo vs. Puntillista
-- **Realismo Capitalista** (Fisher): Hauntología, Depresión Hedónica
-- **Infocracia** (Sadin): Silicolonización, IA como Oráculo
-- **Semiocapitalismo** (Berardi): Pánico-Depresión, Precarización Cognitiva
-
-#### LAYER 3: Economía Emocional (Pasiones Políticas)
-**Autoridades**: Eva Illouz, François Dubet, Michael Sandel
-- **Capitalismo Emocional** (Illouz): Mercantilización del afecto, Amor Líquido
-- **Pasiones Tristes** (Dubet): Resentimiento, Humillación, Desprecio, Envidia
-- **Tiranía del Mérito** (Sandel): Meritocracia como teología, Hubris y auto-desprecio
-
----
-
-## 🧰 Herramientas de Diagnóstico
-
-### `cultural_pathology_analysis`
-Herramienta MCP que integra las 3 capas de análisis.
-
-**Modos de análisis**:
-1. **`analyze_temporality`** (Hartmut Rosa)
-   - Detecta si el tiempo es "narrativo" (con aroma) o "puntillista" (atomizado)
-   - Identifica alienación por aceleración
-
-2. **`detect_technofeudalism`** (Yanis Varoufakis / Eric Sadin)
-   - Detecta extracción de renta digital
-   - Identifica servidumbre digital (usuarios como siervos)
-
-3. **`psychopolitical_scan`** (Byung-Chul Han / Mark Fisher)
-   - Escanea patologías psicopolíticas (auto-explotación, positividad tóxica)
-   - Detecta realismo capitalista y hauntología
-
-4. **`emotional_economy`** (Eva Illouz / François Dubet / Michael Sandel)
-   - Analiza pasiones tristes (resentimiento, humillación)
-   - Detecta capitalismo emocional y tiranía del mérito
-
-5. **`full_diagnosis`** (Todas las capas)
-   - Diagnóstico completo: M1 (economía) + M2 (afecto) + M3 (ideología)
-   - Propone salidas basadas en resonancia y solidaridad (no autoayuda)
-
----
-
-## 🔬 Workflow de Análisis (5 Pasos)
-
-```
-1. MATERIALIZAR (M1): ¿Industria o Nube/Renta? ¿Tecnofeudalismo?
-2. FENOMENIZAR (M2): ¿Cansancio? ¿Resentimiento? ¿Depresión hedónica?
-3. ESENCIAR (M3): ¿Realismo Capitalista? ¿Ideología meritocrática?
-4. DIAGNOSTICAR: Cruzar M1+M2+M3 → Patología (ej. "Alienación por Aceleración")
-5. CRITICAR: Salida → Resonancia (Rosa) / Pensamiento Diferente (Sadin) / Solidaridad (Armesilla)
-```
-
----
-
-## 📚 Vocabulario Crítico
-
-- **Resonancia** / **Indisponible** (Rosa)
-- **Infocracia** / **Silicolonización** (Sadin)
-- **Tecnofeudalismo** / **Servidumbre Digital** (Varoufakis/Sadin)
-- **Hauntología** / **Realismo Capitalista** (Fisher)
-- **Psicopolítica** / **Auto-explotación** (Han)
-- **Pasiones Tristes** / **Tiranía del Mérito** (Dubet/Sandel)
-- **Capitalismo Emocional** / **Amor Líquido** (Illouz)
-- **Tiempo Puntillista** / **Aceleración Ciega** (Rosa/Han)
-
----
-
-## 🆕 Capacidades v2.1.0 (Base Gnoseológica)
-
-### 1. Policía Lógico (Logic Guard)
-Sistema de validación gnoseológica que impide operaciones inválidas:
-- ✅ **BLOCK_CRITIQUE_WITHOUT_ONTOLOGY**: No permite crítica sin materialidad M1
-- ✅ **DETECT_IDEALISM**: Detecta M3 sin referente M1 (metafísica)
-- ✅ **REQUIRE_CIRCULARITY**: Valida que la transducción sea circular (M3 → M1)
-- ✅ **VALIDATE_TERMS_BEFORE_RELATIONS**: Exige términos antes de relaciones
-
-### 2. Categorías Operatorias Universales
-Abstracción de los roles literarios a roles gnoseológicos universales:
-- **Agente_Operatorio** (antes: Autor) - Quien fabrica conocimiento
-- **Material_Formado** (antes: Obra) - El objeto constituido
-- **Sujeto_Receptor** (antes: Lector) - Quien reconstruye operatoriamente
-- **Operador_Critico** (antes: Transductor) - Quien analiza e impugna
-
-### 3. Visualización de Symploké (Mermaid)
-Herramienta `generate_symploke_graph` que genera diagramas:
-- **operatorio**: Agente → Operación → Material → Resultado
-- **materialidades**: Visualiza términos en M1, M2, M3
-- **falacias**: Diagrama del circularismo vs. falacias
-
-### 4. Sistema RAG (Vector Store)
-Infraestructura para ingestar PDFs locales:
-- Categorización por dominio (Literatura, Ciencias Sociales, Economía, Filosofía)
-- Evita "alucinaciones idealistas" mediante anclaje en textos reales
-- Definiciones estrictas desde Maestro, Armesilla, Bueno
-
-### 5. Detección Automática de Falacias
-Análisis heurístico de texto para detectar:
-- **Descriptivismo**: "Los datos hablan por sí solos"
-- **Teoreticismo**: "La teoría predice que..."
-- **Adecuacionismo**: "Por un lado... por otro lado..."
-
----
-
-## 🔬 Fundamentos Teóricos
-
-### Teoría del Cierre Categorial
-- Un **campo categorial** es un conjunto de términos relacionados
-- El **cierre** ocurre cuando las operaciones generan términos del mismo campo
-- Las ciencias "cierran" cuando operan inmanentemente
-
-### Principio de Symploké
-- ❌ Holismo: "Todo conectado con todo"
-- ❌ Atomismo: "Nada conectado"
-- ✅ Symploké: "Algunos términos se conectan con algunos, pero no con todos"
-
-### Conjugación (no síntesis hegeliana)
-- La materia (α) y la forma (β) se constituyen mutuamente
-- Las contradicciones reales no se "superan": se ANALIZAN
-- El conocimiento se CONSTRUYE, no "emerge"
-
----
-
-## 📚 Referencias
-
-### Gustavo Bueno
-- *Teoría del Cierre Categorial* (1992-1993)
-- *¿Qué es la ciencia?* (1995)
-- *El mito de la cultura* (1996)
-
-### Jesús G. Maestro
-- *Crítica de la razón literaria* (2017-2022)
-- *Contra las musas de la ira* (2014)
-
-### Santiago Armesilla
-- *Economía Política* (materialismo económico)
-- *El marxismo y la cuestión nacional española*
-
-### Recursos
-- [Fundación Gustavo Bueno](https://fgbueno.es)
-- [Filosofía en español](https://filosofia.org)
-
----
-
-## 🌍 Dominios de Conocimiento
-
-GNOSIS MCP opera sobre 4 dominios según el Materialismo Filosófico:
-
-### 1. LITERATURA (Jesús G. Maestro)
-- **Cuándo**: Solo cuando el usuario pregunta EXPLÍCITAMENTE por literatura
-- **Referencia**: *Crítica de la Razón Literaria* (2017-2022)
-- **Enfoque**: Análisis literario como construcción gnoseológica
-
-### 2. CIENCIAS SOCIALES (Santiago Armesilla)
-- **Cuándo**: Análisis de sociedad, instituciones, relaciones sociales
-- **Referencia**: Materialismo sociológico
-- **Enfoque**: Desmitificación de categorías sociológicas
-
-### 3. ECONOMÍA (Santiago Armesilla)
-- **Cuándo**: Democracia, mercado, Estado, valor, capital
-- **Referencia**: *Economía Política* (materialismo económico)
-- **Enfoque**: Crítica de la economía política neoclásica
-
-### 4. FILOSOFÍA (Gustavo Bueno)
-- **Cuándo**: Base gnoseológica transversal a todos los dominios
-- **Referencia**: *Teoría del Cierre Categorial* (1992-1993)
-- **Enfoque**: Fundamentos del Materialismo Filosófico
-
----
-
-## 🧪 Prueba de Fuego
-
-Para verificar que el sistema opera correctamente:
-
-```
-Usa la herramienta gnosis con el tag 'comenzar' para analizar:
-"La democracia es el sistema donde el pueblo es libre y feliz"
-```
-
-El sistema debe:
-1. Abrir campo categorial (filosofía política)
-2. Identificar términos: democracia, pueblo, libertad, felicidad
-3. Detectar falacia: **adecuacionismo** (yuxtaponer conceptos sin conjugar)
-4. Impugnar el mito de la felicidad política
-5. Transducir: conocimiento construido críticamente
-
----
-
-## 📄 Licencia
-
-MIT License
-
----
-
-## ✨ Créditos
-
-- **Filosofía:** Materialismo Filosófico de Gustavo Bueno
-- **Crítica Literaria:** Jesús G. Maestro
-- **Arquitectura MCP:** Model Context Protocol
-
----
-
-<p align="center">
-  <em>El conocimiento no está "ahí" esperando ser descubierto. Se FABRICA.</em>
-</p>
+**Version**: 4.0.0  
+**Architecture**: Object-Oriented Programming (OOP)  
+**Language**: TypeScript (English codebase, Spanish philosophy preserved)  
+**Compatibility**: Claude Desktop, MCP 1.0+

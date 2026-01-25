@@ -1,62 +1,79 @@
 import express from 'express';
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import { CallToolRequestSchema, ListToolsRequestSchema, ListResourcesRequestSchema, ReadResourceRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { RazonLiterariaServer, GNOSIS_TOOL } from './core.js';
 import { GLOSARIO_TOOL, consultarGlosario } from './glossary.js';
 import { MERMAID_TOOL, procesarMermaidTool } from './tools/mermaidVisualizer.js';
-import { CULTURAL_PATHOLOGY_TOOL, procesarCulturalPathology } from './tools/culturalPathologyTool.js';
+import { PATHOLOGY_TOOL, processPathologyAnalysis } from './tools/PathologyTool.js';
+import { GNOSIS_RESOURCES, FRAMEWORK_RESOURCE_CONTENT } from './prompts.js';
 import { logger } from './logger.js';
+import { createCulturalPathologist } from './diagnosticators/index.js';
 
 // ============================================================================
-// GNOSIS MCP - HTTP Server (SSE Transport)
-// Servidor de Construcción Gnoseológica - Materialismo Filosófico
+// GNOSIS MCP v4.0 - HTTP Server (SSE Transport)
+// Multi-Layer Cultural Diagnostic Engine (OOP Architecture)
 // ============================================================================
 
 const app = express();
 app.use(express.json());
 
-// --- Estadísticas del servidor ---
+// --- Server statistics ---
 const stats = {
   startTime: new Date().toISOString(),
   totalSessions: 0,
   totalOperations: 0,
-  operationsByTag: {} as Record<string, number>,
-  falaciasImpugnadas: {
-    descriptivismo: 0,
-    teoreticismo: 0,
-    adecuacionismo: 0
-  }
+  operationsByTool: {} as Record<string, number>,
+  diagnosticsByLayer: { layer2: 0, layer3: 0 } as Record<string, number>
 };
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     name: 'gnosis-mcp',
-    version: '2.0.0',
-    framework: 'Materialismo Filosófico',
+    version: '4.0.0',
+    architecture: 'OOP Multi-Layer',
+    framework: 'Philosophical Materialism',
     uptime: Math.floor((Date.now() - new Date(stats.startTime).getTime()) / 1000) + 's'
   });
 });
 
 // Info endpoint
 app.get('/info', (req, res) => {
+  const pathologist = createCulturalPathologist();
+  const diagnosticators = pathologist.getDiagnosticators();
+
   res.json({
     name: 'GNOSIS MCP',
-    version: '3.0.0',
-    description: 'Servidor de Construcción Gnoseológica basado en el Materialismo Filosófico',
-    authors: ['Gustavo Bueno', 'Jesús G. Maestro'],
-    domains: 8,
-    tags: 26,  // Updated: 24 + 2 new (criticar, ejemplificar)
-    falacias: ['descriptivismo', 'teoreticismo', 'adecuacionismo'],
-    materialidad: ['M1 (físico)', 'M2 (psíquico)', 'M3 (lógico)'],
+    version: '4.0.0',
+    description: 'Multi-Layer Cultural Diagnostic Engine based on Philosophical Materialism',
+    architecture: 'Object-Oriented Programming (OOP)',
+    layers: {
+      layer1: {
+        name: 'Philosophical Materialism',
+        authorities: ['Gustavo Bueno', 'Jesús G. Maestro', 'Santiago Armesilla'],
+        function: 'Logical validation, Categorical Closure, Ontology (M1/M2/M3)'
+      },
+      layer2: {
+        name: 'Cultural Diagnosis',
+        authorities: diagnosticators.filter(d => d.layer === 2).map(d => d.name),
+        count: diagnosticators.filter(d => d.layer === 2).length
+      },
+      layer3: {
+        name: 'Emotional Economy',
+        authorities: diagnosticators.filter(d => d.layer === 3).map(d => d.name),
+        count: diagnosticators.filter(d => d.layer === 3).length
+      }
+    },
+    diagnosticators: diagnosticators,
     tools: ['gnosis', 'gnosis_glosario', 'generate_symploke_graph', 'cultural_pathology_analysis'],
-    flujo: 'comenzar → terminar → relacionar → fenomenizar → referenciar → esenciar → definir/clasificar/demostrar/modelar → impugnar → criticar → ejemplificar → conjugar → dialectizar → verificar → cerrar → transducir'
+    materiality: ['M1 (Physical)', 'M2 (Psychological)', 'M3 (Logical)'],
+    fallacies: ['descriptivism', 'theoreticism', 'adequationism']
   });
 });
 
-// Stats endpoint (new)
+// Stats endpoint
 app.get('/stats', (req, res) => {
   res.json({
     status: 'ok',
@@ -65,81 +82,136 @@ app.get('/stats', (req, res) => {
   });
 });
 
-// SSE endpoint para MCP
+// SSE endpoint for MCP
 app.get('/mcp', async (req, res) => {
-  logger.info('Nueva conexión SSE establecida');
+  logger.info('New SSE connection established');
   stats.totalSessions++;
-  
+
   const transport = new SSEServerTransport('/mcp', res);
-  
+
   const server = new Server(
-    { name: "gnosis-mcp-http", version: "3.0.0" },
-    { capabilities: { tools: {} } }
+    { name: "gnosis-mcp-http", version: "4.0.0" },
+    { capabilities: { tools: {}, resources: {} } }
   );
-  
-  // Nueva instancia por conexión (estado aislado)
-  const gnosisBackend = new RazonLiterariaServer();
 
-  server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: [GNOSIS_TOOL, GLOSARIO_TOOL, MERMAID_TOOL, CULTURAL_PATHOLOGY_TOOL]
-  }));
+  // New instance per connection (isolated state)
+  const razonServer = new RazonLiterariaServer();
 
+  // --- List Tools ---
+  server.setRequestHandler(ListToolsRequestSchema, async () => {
+    return {
+      tools: [
+        GNOSIS_TOOL,
+        GLOSARIO_TOOL,
+        MERMAID_TOOL,
+        PATHOLOGY_TOOL
+      ]
+    };
+  });
+
+  // --- List Resources ---
+  server.setRequestHandler(ListResourcesRequestSchema, async () => {
+    return {
+      resources: GNOSIS_RESOURCES
+    };
+  });
+
+  // --- Read Resource ---
+  server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+    const uri = request.params.uri;
+
+    if (uri === "gnosis://framework") {
+      return {
+        contents: [{
+          uri,
+          mimeType: "text/markdown",
+          text: FRAMEWORK_RESOURCE_CONTENT
+        }]
+      };
+    }
+
+    if (uri === "gnosis://diagnosticators") {
+      const pathologist = createCulturalPathologist();
+      return {
+        contents: [{
+          uri,
+          mimeType: "application/json",
+          text: JSON.stringify({
+            version: "4.0.0",
+            diagnosticators: pathologist.getDiagnosticators(),
+            totalDiagnosticators: pathologist.getDiagnosticators().length,
+            layers: {
+              layer2: pathologist.getDiagnosticators().filter(d => d.layer === 2),
+              layer3: pathologist.getDiagnosticators().filter(d => d.layer === 3)
+            }
+          }, null, 2)
+        }]
+      };
+    }
+
+    throw new Error(`Resource not found: ${uri}`);
+  });
+
+  // --- Call Tool ---
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
-    
-    if (name === "gnosis" || name === "razon_literaria") {
-      stats.totalOperations++;
-      const tag = (args as any).tag;
-      stats.operationsByTag[tag] = (stats.operationsByTag[tag] || 0) + 1;
-      
-      // Track falacias
-      if (tag === 'impugnar' && (args as any).falacia) {
-        const falacia = (args as any).falacia as keyof typeof stats.falaciasImpugnadas;
-        if (stats.falaciasImpugnadas[falacia] !== undefined) {
-          stats.falaciasImpugnadas[falacia]++;
-        }
+
+    // Update stats
+    stats.totalOperations++;
+    stats.operationsByTool[name] = (stats.operationsByTool[name] || 0) + 1;
+
+    logger.info(`Tool called: ${name}`, { data: args || {} });
+
+    try {
+      switch (name) {
+        case 'gnosis':
+          return razonServer.processThought(args || {});
+
+        case 'gnosis_glosario':
+          return consultarGlosario(args as any || {});
+
+        case 'generate_symploke_graph':
+          return procesarMermaidTool(args || {});
+
+        case 'cultural_pathology_analysis':
+          // Update layer stats
+          const pathologyArgs = args as any;
+          if (pathologyArgs?.mode === 'layer_diagnosis' && pathologyArgs?.layer) {
+            stats.diagnosticsByLayer[`layer${pathologyArgs.layer}`] = (stats.diagnosticsByLayer[`layer${pathologyArgs.layer}`] || 0) + 1;
+          }
+          return processPathologyAnalysis(pathologyArgs || {});
+
+        default:
+          throw new Error(`Unknown tool: ${name}`);
       }
-      
-      return gnosisBackend.processThought(args);
+    } catch (error: any) {
+      logger.error('Tool execution error', { data: { tool: name, error: error.message } });
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify({ error: error.message }, null, 2)
+        }],
+        isError: true
+      };
     }
-    
-    if (name === "gnosis_glosario") {
-      return consultarGlosario(args as any);
-    }
-
-    if (name === "generate_symploke_graph") {
-      return procesarMermaidTool(args as any);
-    }
-
-    if (name === "cultural_pathology_analysis") {
-      return procesarCulturalPathology(args as any);
-    }
-
-    throw new Error(`Herramienta desconocida: ${name}`);
   });
 
   await server.connect(transport);
-});
 
-// POST endpoint para mensajes
-app.post('/mcp', async (req, res) => {
-  const transport = new SSEServerTransport('/mcp', res);
-  await transport.handlePostMessage(req, res);
-});
+  logger.info('MCP Server connected via SSE');
 
-// Iniciar servidor
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  logger.banner('GNOSIS MCP', '3.0.0', 'http', Number(PORT));
-  logger.info('Endpoints disponibles', {
-    data: {
-      health: 'GET /health',
-      info: 'GET /info',
-      stats: 'GET /stats',
-      sse: 'GET /mcp',
-      messages: 'POST /mcp'
-    }
+  // Handle cleanup
+  req.on('close', () => {
+    logger.info('SSE connection closed');
   });
 });
 
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  logger.info(`GNOSIS MCP v4.0 HTTP Server listening on port ${PORT}`);
+  logger.info(`SSE endpoint: http://localhost:${PORT}/mcp`);
+  logger.info(`Health check: http://localhost:${PORT}/health`);
+  logger.info(`Info: http://localhost:${PORT}/info`);
+  logger.info(`Stats: http://localhost:${PORT}/stats`);
+});
